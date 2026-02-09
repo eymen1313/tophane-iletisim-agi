@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<title>Giriş Yap</title>
+
+<style>
+  body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#0f172a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+  }
+
+  .card{
+    background:#1e293b;
+    padding:30px;
+    border-radius:12px;
+    width:320px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+    color:white;
+  }
+
+  h2{
+    text-align:center;
+    margin-bottom:20px;
+  }
+
+  input{
+    width:100%;
+    padding:10px;
+    margin-bottom:12px;
+    border-radius:8px;
+    border:none;
+    outline:none;
+    background:#334155;
+    color:white;
+  }
+
+  input::placeholder{
+    color:#94a3b8;
+  }
+
+  button{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    background:#38bdf8;
+    color:black;
+  }
+
+  button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+  }
+
+  .pass-wrapper{
+    position:relative;
+  }
+
+  .eye{
+    position:absolute;
+    right:10px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+    font-size:14px;
+    color:#94a3b8;
+  }
+
+  #status{
+    text-align:center;
+    margin-top:10px;
+    font-size:14px;
+  }
+
+  *{ box-sizing:border-box; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Giriş Yap</h2>
+
+  <input id="isim" placeholder="kullanıcı adı">
+
+  <div class="pass-wrapper">
+    <input id="password" type="password" placeholder="şifre">
+    <span class="eye" id="togglePass">👁</span>
+  </div>
+
+  <button id="loginBtn">Giriş Yap</button>
+  <a href="kayitol.html"> <h5>kayıt ol</h2></a>
+  <p id="status"></p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword }
+from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getDatabase, ref, get }
+from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCXoJSM0z0ytF5a0AeyhbdFwy8_DZmN-MM",
+  authDomain: "tophanerebirth.firebaseapp.com",
+  databaseURL: "https://tophanerebirth-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "tophanerebirth",
+  storageBucket: "tophanerebirth.firebasestorage.app",
+  messagingSenderId: "392712133412",
+  appId: "1:392712133412:web:3674b7f4fcc42b936531b1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const nameInput = document.getElementById("isim");
+const passwordInput = document.getElementById("password");
+const statusText = document.getElementById("status");
+const loginBtn = document.getElementById("loginBtn");
+
+/* 👁 şifre göster */
+document.getElementById("togglePass").onclick = () => {
+  passwordInput.type =
+    passwordInput.type === "password" ? "text" : "password";
+};
+
+loginBtn.onclick = login;
+
+/* 🔐 GİRİŞ */
+async function login(){
+  const isim = nameInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  if(!isim || !password){
+    statusText.innerText = "Bilgileri doldur";
+    return;
+  }
+
+  const email = isim.toLowerCase() + "@test.com";
+
+  loginBtn.disabled = true;
+  loginBtn.innerText = "Giriş yapılıyor...";
+
+  try{
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    const uid = userCred.user.uid;
+
+    const snap = await get(ref(db, "users/" + uid));
+
+    if(snap.exists()){
+      const data = snap.val();
+
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("profile", data.profile || "");
+
+      statusText.innerText = "Giriş başarılı ✔";
+      window.location.href = "panel.html";
+    }else{
+      statusText.innerText = "Kullanıcı verisi bulunamadı";
+    }
+
+  }catch(e){
+    statusText.innerText = "Hatalı kullanıcı adı veya şifre ❌";
+  }
+
+  loginBtn.disabled = false;
+  loginBtn.innerText = "Giriş Yap";
+}
+</script>
+
+
+</body>
+</html>
+ 

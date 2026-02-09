@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Ödevler</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:Poppins, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+}
+
+header{
+    text-align:center;
+    margin-top:30px;
+}
+
+#profilepic{
+    width:80px;
+    height:80px;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #fff;
+}
+
+#username{
+    margin-top:8px;
+    font-weight:600;
+}
+
+.container{
+    width:90%;
+    max-width:600px;
+    margin:30px auto;
+}
+
+.card{
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:12px;
+    background:#334155;
+    box-shadow:0 5px 15px rgba(0,0,0,.3);
+}
+
+.card small{
+    opacity:.7;
+    font-size:12px;
+}
+
+.type{
+    font-weight:600;
+    margin-bottom:5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <img id="profilepic">
+    <div id="username"></div>
+</header>
+
+<div class="container" id="odevlerContainer">
+    Yükleniyor...
+</div>
+
+<script type="module">
+/* 🔥 Firebase */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, get }
+from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCXoJSM0z0ytF5a0AeyhbdFwy8_DZmN-MM",
+    authDomain: "tophanerebirth.firebaseapp.com",
+    databaseURL: "https://tophanerebirth-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "tophanerebirth",
+    storageBucket: "tophanerebirth.firebasestorage.app",
+    messagingSenderId: "392712133412",
+    appId: "1:392712133412:web:3674b7f4fcc42b936531b1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* 👤 Profil */
+document.getElementById("profilepic").src =
+    localStorage.getItem("profile") ||
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+document.getElementById("username").innerText =
+    localStorage.getItem("username") || "Misafir";
+
+/* 📚 ODEVLERI CEK */
+const container = document.getElementById("odevlerContainer");
+
+async function loadOdevler(){
+    const snap = await get(ref(db, "odevler"));
+
+    if(!snap.exists()){
+        container.innerText = "Hiç içerik yok";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const data = snap.val();
+
+    Object.entries(data).forEach(([key, o])=>{
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.background = o.renk || "#334155";
+
+        let turText = "Ödev";
+        if(o.tur == 1) turText = "Duyuru";
+        if(o.tur == 2) turText = "Mesaj";
+
+        card.innerHTML = `
+            <div class="type">${o.mesaj}</div>
+            <small>
+                Gönderen: ${o.gonderen}<br>
+                
+                Tarih: ${new Date(o.tarih * 1000).toLocaleString("tr-TR")}<br>
+            </small>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+loadOdevler();
+</script>
+
+</body>
+</html>

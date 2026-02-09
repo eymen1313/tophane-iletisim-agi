@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ön Bilgilendirme</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #1f1f1f, #3a3a3a);
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .kutu {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            width: 420px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .kutu h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .onay {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .butonlar {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #devamBtn {
+            background-color: #4caf50;
+            color: white;
+            
+            /*cursor: not-allowed;*/
+        }
+    </style>
+</head>
+<body>
+
+    <div class="kutu">
+        <h2>Ön Bilgilendirme</h2>
+
+        <ul>
+            <li>Yapacağınız isimler kendi isminiz olsun ya da en azından uygun bir isim olsun. Gidip de "MaymunBüken42" koymayın.</li>
+            <li>Profil fotoğrafınıza ayıp ayıp şeyler koymayın, kızarım 🤬</li>
+            <li>saçma sapan çok ağır küfürler etmeyin. dozunu kaçırmayın mal gibi. sonra kavga ediyonuz bana patlyıo</li>
+            <li>hacklemeye çalışmayın (sana diyom yiğit)</li>
+            <li>kim olduğunu anlayamadığımı banlarım. gidipte "maymunbüken42 kim" diye sormam</li>
+            <li>Kurallara uygun davranmazsanız hesap patlar. Ayık olun, akıllı olun.</li>
+        </ul>
+
+        <div class="onay">
+            <input type="checkbox" id="onayCheckbox" checked disabled>
+            <label for="onayCheckbox">Kullanım şartlarını onaylıyorum</label>
+        </div>
+
+        <div class="butonlar">
+            <button id="devamBtn" onclick="devamEt()">Devam Et</button>
+        </div>
+    </div>
+
+    <script>
+        const checkbox = document.getElementById("onayCheckbox");
+        const devamBtn = document.getElementById("devamBtn");
+
+        function devamEt() {
+            window.location.href = "kayitol.html";
+        }
+
+        //devamBtn.disabled = true;
+        console.log(Date.now())
+    </script>
+
+</body>
+</html>
